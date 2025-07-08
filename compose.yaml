@@ -1,7 +1,7 @@
 ﻿services:
   web.api:
     image: ${DOCKER_REGISTRY-}webapi
-    container_name: licence_handler_api
+    container_name: books_manager_api
     depends_on:
       - postgres
     build:
@@ -13,7 +13,7 @@
 
   postgres:
     image: postgres:17
-    container_name: licence_handler_db
+    container_name: books_manager_db
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres

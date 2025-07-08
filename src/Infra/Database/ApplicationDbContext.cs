@@ -1,14 +1,17 @@
-using Application.Abstractions;
+using System.Text.Json;
 using Application.Abstractions.Data;
-using Domain.Users;
+using Domain;
 using Microsoft.EntityFrameworkCore;
+using SharedKernel;
 
 namespace Infra.Database;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options), IApplicationDbContext
 {
-    public DbSet<User> Users { get; set; }
+    public DbSet<Book> Books { get; set; }
+    public DbSet<Loan> Loans { get; set; }
+    public DbSet<OutboxEvent> OutboxEvents { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -16,14 +19,29 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.HasDefaultSchema(Schemas.Default);
     }
-    
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        int result = await base.SaveChangesAsync(cancellationToken);
+        var entries = ChangeTracker
+            .Entries()
+            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+            .ToList();
 
-        //TODO: Publicar evento de domínio
-        //await PublishDomainEventsAsync();
-
-        return result;
+        foreach (OutboxEvent? outboxEvent in from entry in entries 
+                 let eventType = entry.State == EntityState.Added ? EventType.Created : EventType.Updated 
+                 let aggregateType = Enum.Parse<AggregateType>(entry.Entity.GetType().Name)
+                select new OutboxEvent
+                 {
+                     Id = Guid.NewGuid(),
+                     Aggregate = aggregateType,
+                     Event = eventType,
+                     Payload = JsonSerializer.Serialize(entry.Entity),
+                     Processed = false
+                 })
+        {
+            OutboxEvents.Add(outboxEvent);
+        }
+        
+        return await base.SaveChangesAsync(cancellationToken);
     }
 }

@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A37CB7B2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Tests", "tests\Application.Tests\Application.Tests.csproj", "{3830EFFE-B36B-4DCA-A81F-AAD87867F3E3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{AF5E5A78-02C7-4078-8F27-E26B3AC5B913}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3830EFFE-B36B-4DCA-A81F-AAD87867F3E3} = {A37CB7B2-C274-4E31-9702-C80B03690728}
+		{2CCBDD54-36A7-40BC-87E9-EAB87C3D6019} = {AF5E5A78-02C7-4078-8F27-E26B3AC5B913}
 	EndGlobalSection
 EndGlobal
