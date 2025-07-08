@@ -1,0 +1,24 @@
+﻿services:
+  web.api:
+    image: ${DOCKER_REGISTRY-}webapi
+    container_name: licence_handler_api
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: src/Web.API/Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+
+  postgres:
+    image: postgres:17
+    container_name: licence_handler_db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./.containers/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
