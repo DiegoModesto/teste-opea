@@ -45,7 +45,7 @@ public static class DependencyInjection
             .GetSection(key: "MongoDb")
             .Get<MongoDbSettings>();
 
-        services.AddSingleton<ReadDbContext>(_ => new ReadDbContext(db!.ConnectionString, db.DatabaseName));
+        services.AddSingleton<IReadDbContext>(_ => new ReadDbContext(db!.ConnectionString, db.DatabaseName));
         
         return services;
     }
