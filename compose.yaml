@@ -1,15 +1,15 @@
 ﻿services:
-  web.api:
-    image: ${DOCKER_REGISTRY-}webapi
-    container_name: books_manager_api
-    depends_on:
-      - postgres
-    build:
-      context: .
-      dockerfile: src/Web.API/Dockerfile
-    ports:
-      - "5000:8080"
-      - "5001:8081"
+  #web.api:
+  #  image: ${DOCKER_REGISTRY-}webapi
+  #  container_name: books_manager_api
+  #  depends_on:
+  #    - postgres
+  #  build:
+  #    context: .
+  #    dockerfile: src/Web.API/Dockerfile
+  #  ports:
+  #    - "5000:8080"
+  #    - "5001:8081"
 
   postgres:
     image: postgres:17
@@ -32,7 +32,7 @@
     environment:
       RABBITMQ_DEFAULT_USER: rabbitmq
       RABBITMQ_DEFAULT_PASS: rabbitmq
-      
+  
   mongodb:
     image: mongo:7
     container_name: books_manager_mongodb
@@ -41,3 +41,26 @@
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: books_manager
+    volumes:
+      - mongodb_data:/data/db
+
+  mongo-express:
+    image: mongo-express:1.0.0-20
+    container_name: books_manager_mongo_express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: false
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_AUTH_USERNAME: mongo
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: diego
+      ME_CONFIG_BASICAUTH_PASSWORD: diego
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:

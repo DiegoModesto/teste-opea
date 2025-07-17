@@ -12,6 +12,7 @@
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
         <PackageReference Include="EFCore.NamingConventions" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="MongoDB.Driver" />
     </ItemGroup>
     
     <ItemGroup>

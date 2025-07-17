@@ -16,7 +16,7 @@ public sealed class Create: IEndpoint
         [Required(ErrorMessage = "Author of the book is required.")]
         public required string Author { get; set; }
         public DateTime Publish { get; set; } = DateTime.Now;
-        public int Remaining { get; set; } = 0;
+        public int Remaining { get; set; } = 15;
     }
 
     public void MapEndpoint(IEndpointRouteBuilder app)

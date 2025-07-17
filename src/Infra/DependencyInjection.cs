@@ -20,6 +20,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         => services
             .AddDatabase(configuration)
+            .AddReadDatabase(configuration)
             .AddAuthenticationInternal(configuration)
             .AddAuthorizationInternal();
 
@@ -35,6 +36,17 @@ public static class DependencyInjection
         
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
+        return services;
+    }
+
+    private static IServiceCollection AddReadDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        MongoDbSettings? db = configuration
+            .GetSection(key: "MongoDb")
+            .Get<MongoDbSettings>();
+
+        services.AddSingleton<ReadDbContext>(_ => new ReadDbContext(db!.ConnectionString, db.DatabaseName));
+        
         return services;
     }
 
@@ -74,4 +86,11 @@ public static class DependencyInjection
 
         return services;
     }
+}
+
+
+internal class MongoDbSettings
+{
+    public string ConnectionString { get; set; } = string.Empty;
+    public string DatabaseName { get; set; } = string.Empty;
 }
