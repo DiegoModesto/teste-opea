@@ -1,7 +1,9 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Application.Abstractions.Data;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SharedKernel;
 
 namespace Infra.Database;
@@ -27,22 +29,38 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .Where(e => e.State is EntityState.Added or EntityState.Modified)
             .Where(e => e.Entity is not OutboxEvent)
             .ToList();
-
-        foreach (OutboxEvent? outboxEvent in from entry in entries 
-                 let eventType = entry.State == EntityState.Added ? EventType.Created : EventType.Updated 
-                 let aggregateType = Enum.Parse<AggregateType>(entry.Entity.GetType().Name)
-                select new OutboxEvent
-                 {
-                     Id = Guid.NewGuid(),
-                     Aggregate = aggregateType,
-                     Event = eventType,
-                     Payload = JsonSerializer.Serialize(entry.Entity),
-                     Processed = false
-                 })
+    
+        if (entries.Count == 0)
         {
-            OutboxEvents.Add(outboxEvent);
+            return await base.SaveChangesAsync(cancellationToken);
         }
-        
+    
+        var outboxEvents = new List<OutboxEvent>(entries.Count);
+        var jsonOptions = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = false
+        };
+    
+        foreach (EntityEntry entry in entries)
+        {
+            EventType eventType = entry.State == EntityState.Added ? EventType.Created : EventType.Updated;
+            AggregateType aggregateType = Enum.Parse<AggregateType>(entry.Entity.GetType().Name);
+    
+            var outboxEvent = new OutboxEvent
+            {
+                Id = Guid.NewGuid(),
+                Aggregate = aggregateType,
+                Event = eventType,
+                Payload = JsonSerializer.Serialize(entry.Entity, jsonOptions),
+                Processed = false
+            };
+    
+            outboxEvents.Add(outboxEvent);
+        }
+    
+        OutboxEvents.AddRange(outboxEvents);
         return await base.SaveChangesAsync(cancellationToken);
     }
 }

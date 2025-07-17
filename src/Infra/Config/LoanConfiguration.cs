@@ -16,8 +16,7 @@ public sealed class LoanConfiguration : IEntityTypeConfiguration<Loan>
             .IsRequired();
 
         builder
-            .Property(l => l.ReturnDate)
-            .IsRequired();
+            .Property(l => l.ReturnDate);
 
         builder
             .Property(l => l.Status)

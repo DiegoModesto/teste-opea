@@ -39,7 +39,7 @@ namespace Infra.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("getdate()");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
@@ -87,7 +87,7 @@ namespace Infra.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
-                        .HasDefaultValueSql("getdate()");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTimeOffset?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
@@ -101,7 +101,7 @@ namespace Infra.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("loan_date");
 
-                    b.Property<DateTime>("ReturnDate")
+                    b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("return_date");
 
