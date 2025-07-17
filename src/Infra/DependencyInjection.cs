@@ -39,7 +39,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddReadDatabase(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddReadDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         MongoDbSettings? db = configuration
             .GetSection(key: "MongoDb")

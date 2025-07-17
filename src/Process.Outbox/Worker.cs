@@ -3,6 +3,7 @@ using Domain;
 using Infra.Database;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
+using SharedKernel.Constants;
 
 namespace Process.Outbox;
 
@@ -24,7 +25,7 @@ public class Worker(IServiceProvider provider) : BackgroundService
         
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await channel.QueueDeclareAsync(
-            queue: "outbox-queue",
+            queue: QueuesName.Outbox,
             durable: true,
             exclusive: false,
             autoDelete: false,
@@ -41,11 +42,12 @@ public class Worker(IServiceProvider provider) : BackgroundService
 
             if (record is not null)
             {
-                byte[] body = Encoding.UTF8.GetBytes(record.Payload);
+                string message = System.Text.Json.JsonSerializer.Serialize(record);
+                byte[] body = Encoding.UTF8.GetBytes(message);
             
                 await channel.BasicPublishAsync(
                     exchange: string.Empty,
-                    routingKey: "outbox-queue",
+                    routingKey: QueuesName.Outbox,
                     mandatory: true,
                     basicProperties: new BasicProperties { Persistent = true },
                     body: body,

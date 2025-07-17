@@ -3,7 +3,5 @@ namespace SharedKernel;
 public enum EventType
 {
     Created,
-    Updated,
-    Loaned,
-    Returned
+    Updated
 }
