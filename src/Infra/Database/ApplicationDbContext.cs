@@ -24,7 +24,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         var entries = ChangeTracker
             .Entries()
-            .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
+            .Where(e => e.State is EntityState.Added or EntityState.Modified)
+            .Where(e => e.Entity is not OutboxEvent)
             .ToList();
 
         foreach (OutboxEvent? outboxEvent in from entry in entries 
