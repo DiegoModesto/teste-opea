@@ -22,3 +22,22 @@
       - ./.containers/db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+  
+  rabbitmq:
+    image: rabbitmq:4.1.2-management
+    container_name: books_manager_rabbitmq
+    ports:
+      - "5672:5672" 
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+      
+  mongodb:
+    image: mongo:7
+    container_name: books_manager_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Application.Abstractions.Messaging;
 using Application.Books.Create;
 using SharedKernel;
@@ -10,7 +11,9 @@ public sealed class Create: IEndpoint
 {
     public sealed record Request
     {
+        [Required(ErrorMessage = "Title of the book is required.")]
         public required string Title { get; set; }
+        [Required(ErrorMessage = "Author of the book is required.")]
         public required string Author { get; set; }
         public DateTime Publish { get; set; } = DateTime.Now;
         public int Remaining { get; set; } = 0;
