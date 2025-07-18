@@ -1,6 +1,7 @@
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
 namespace Application.Loans.ReturnLoan;
@@ -13,7 +14,7 @@ public sealed class ReturnLoanCommandHandler(IApplicationDbContext context) : IC
     {
         Loan? loan = await context
             .Loans
-            .FindAsync(command.LoanId, cancellationToken);
+            .SingleOrDefaultAsync(l => l.Id == command.LoanId, cancellationToken);
 
         if (loan is null)
         {
@@ -33,9 +34,20 @@ public sealed class ReturnLoanCommandHandler(IApplicationDbContext context) : IC
                 break;
         }
         
+        Book? book = await context
+            .Books
+            .SingleOrDefaultAsync(b => b.Id == loan.BookId, cancellationToken);
+
+        if (book is null)
+        {
+            return Result.Failure<string>(error: BookErrors.NotFound(loan.BookId));
+        }
+        
         loan.Status = LoanStatus.Completed;
+        book.TotalRemaining += 1;
         
         context.Loans.Update(loan);
+        context.Books.Update(book);
         await context.SaveChangesAsync(cancellationToken);
         
         return Result.Success(loan.Id.ToString());
