@@ -22,7 +22,7 @@ namespace Infra.Database.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     title = table.Column<string>(type: "text", nullable: false),
                     author = table.Column<string>(type: "text", nullable: false),
-                    publish = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    publish = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     total_remaining = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -77,7 +77,7 @@ namespace Infra.Database.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    return_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    return_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     status = table.Column<int>(type: "integer", nullable: false),
                     book_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),

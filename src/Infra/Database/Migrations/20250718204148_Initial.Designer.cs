@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infra.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250718185554_Initial")]
+    [Migration("20250718204148_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -54,7 +54,7 @@ namespace Infra.Database.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
-                    b.Property<DateTime>("Publish")
+                    b.Property<DateTimeOffset>("Publish")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("publish");
 
@@ -100,7 +100,7 @@ namespace Infra.Database.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<DateTime?>("ReturnDate")
+                    b.Property<DateTimeOffset?>("ReturnDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("return_date");
 

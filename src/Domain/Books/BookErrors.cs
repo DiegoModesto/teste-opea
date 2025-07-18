@@ -15,4 +15,8 @@ public static class BookErrors
     public static Error NoBookAvailable() => Error.Failure(
         code: "Books.NoBookAvailable",
         description: "There are no books available for loan at the moment.");
+    
+    public static Error TheresNoLoans => Error.Failure(
+        code: "BooksAndLoans.NoBookAndLoans",
+        description: "We don't have any books or loans at the moment.");
 }

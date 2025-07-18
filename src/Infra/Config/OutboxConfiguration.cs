@@ -29,7 +29,7 @@ public sealed class OutboxConfiguration: IEntityTypeConfiguration<OutboxEvent>
 
         builder
             .Property(e => e.CreatedAt)
-            .HasDefaultValueSql("getdate()")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
 
         builder

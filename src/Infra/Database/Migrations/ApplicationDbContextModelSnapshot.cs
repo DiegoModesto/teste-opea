@@ -51,7 +51,7 @@ namespace Infra.Database.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("is_deleted");
 
-                    b.Property<DateTime>("Publish")
+                    b.Property<DateTimeOffset>("Publish")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("publish");
 
@@ -97,7 +97,7 @@ namespace Infra.Database.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<DateTime?>("ReturnDate")
+                    b.Property<DateTimeOffset?>("ReturnDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("return_date");
 
