@@ -19,12 +19,14 @@ public sealed class ReadDbContext : IReadDbContext
         {
             cm.AutoMap();
             cm.MapIdMember(c => c.Id).SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+            cm.GetMemberMap(c => c.Loan).SetIgnoreIfNull(true);
         });
         
         BsonClassMap.RegisterClassMap<Loan>(cm =>
         {
             cm.AutoMap();
             cm.MapIdMember(c => c.Id).SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+            cm.GetMemberMap(c => c.BookId).SetIgnoreIfNull(true);
         });
         
         var client = new MongoClient(connectionString);

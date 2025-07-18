@@ -63,7 +63,7 @@ public class Worker(IServiceProvider provider) : BackgroundService
                 Console.WriteLine($"Registro atualizado como processado: {record.Id}");
             }
             
-            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+            await Task.Delay(TimeSpan.FromMilliseconds(1000), stoppingToken);
         }
     }
 }

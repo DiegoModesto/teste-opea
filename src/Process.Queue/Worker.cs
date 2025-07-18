@@ -1,3 +1,4 @@
+using Application.Abstractions.Data;
 using Domain;
 using Infra.Database;
 using MongoDB.Driver;
@@ -10,7 +11,7 @@ namespace Process.Queue;
 
 public class Worker : BackgroundService
 {
-    private readonly ReadDbContext _context;
+    private readonly IReadDbContext _context;
     private readonly ConnectionFactory _factory = new ConnectionFactory
     {
         HostName = "localhost",
@@ -23,7 +24,7 @@ public class Worker : BackgroundService
     {
         using IServiceScope scope = provider.CreateScope();
         
-        _context = scope.ServiceProvider.GetRequiredService<ReadDbContext>();
+        _context = scope.ServiceProvider.GetRequiredService<IReadDbContext>();
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -117,7 +118,20 @@ public class Worker : BackgroundService
     }
     private async Task AddLoanAsync(Loan loan, CancellationToken stoppingToken)
     {
-        await _context.Loans.InsertOneAsync(document: loan, stoppingToken);
+        try
+        {
+            var opt = new InsertOneOptions
+            {
+                BypassDocumentValidation = true,
+                Comment = "Loan of book added by Worker"
+            };
+            await _context.Loans.InsertOneAsync(document: loan, opt, stoppingToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
     private async Task UpdateLoanAsync(Loan loan, CancellationToken stoppingToken)
     {
