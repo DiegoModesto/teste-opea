@@ -5,7 +5,6 @@ namespace Domain;
 public sealed class Loan : Entity
 {
     public Guid Id { get; set; }
-    public DateTime LoanDate { get; set; }
     public DateTime? ReturnDate { get; set; }
     public LoanStatus Status { get; set; }
     

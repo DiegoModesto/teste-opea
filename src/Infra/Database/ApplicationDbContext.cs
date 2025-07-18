@@ -48,6 +48,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             EventType eventType = entry.State == EntityState.Added ? EventType.Created : EventType.Updated;
             AggregateType aggregateType = Enum.Parse<AggregateType>(entry.Entity.GetType().Name);
     
+            entry.Entity.GetType().GetProperty(name: "CreatedAt")?.SetValue(entry.Entity, DateTimeOffset.UtcNow);
+            
             var outboxEvent = new OutboxEvent
             {
                 Id = Guid.NewGuid(),

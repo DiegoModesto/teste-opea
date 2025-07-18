@@ -12,10 +12,6 @@ public sealed class LoanConfiguration : IEntityTypeConfiguration<Loan>
         builder.HasKey(l => l.Id);
 
         builder
-            .Property(l => l.LoanDate)
-            .IsRequired();
-
-        builder
             .Property(l => l.ReturnDate);
 
         builder

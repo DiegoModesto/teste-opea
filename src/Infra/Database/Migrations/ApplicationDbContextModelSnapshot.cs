@@ -97,10 +97,6 @@ namespace Infra.Database.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.Property<DateTime>("LoanDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("loan_date");
-
                     b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("return_date");
