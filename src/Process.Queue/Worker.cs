@@ -90,13 +90,11 @@ public class Worker : BackgroundService
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            await ((AsyncEventingBasicConsumer)sender).Channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false, stoppingToken);
             
             Console.WriteLine("Message processed successfully");
         };
 
-        await channel.BasicConsumeAsync(queue: QueuesName.Outbox, autoAck: false, consumer, cancellationToken: stoppingToken);
+        await channel.BasicConsumeAsync(queue: QueuesName.Outbox, autoAck: true, consumer, cancellationToken: CancellationToken.None);
     }
 
     private async Task AddBookAsync(Book book, CancellationToken stoppingToken)

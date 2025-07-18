@@ -1,5 +1,4 @@
 using System.Text;
-using Application.Abstractions;
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Infra.Authentication;

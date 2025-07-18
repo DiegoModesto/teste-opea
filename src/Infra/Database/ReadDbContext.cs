@@ -15,21 +15,17 @@ public sealed class ReadDbContext : IReadDbContext
     
     public ReadDbContext(string connectionString, string databaseName)
     {
-        BsonClassMap.RegisterClassMap<Book>(cm =>
-        {
-            cm.AutoMap();
-            cm.MapIdMember(c => c.Id).SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
-            cm.GetMemberMap(c => c.Loan).SetIgnoreIfNull(true);
-        });
-        
-        BsonClassMap.RegisterClassMap<Loan>(cm =>
-        {
-            cm.AutoMap();
-            cm.MapIdMember(c => c.Id).SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
-            cm.GetMemberMap(c => c.BookId).SetIgnoreIfNull(true);
-        });
+        ConfigureGuidSerialization();
         
         var client = new MongoClient(connectionString);
         _database = client.GetDatabase(databaseName);
+    }
+    
+    private static void ConfigureGuidSerialization()
+    {
+        if (!BsonClassMap.IsClassMapRegistered(typeof(Guid)))
+        {
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+        }
     }
 }

@@ -15,9 +15,9 @@ public sealed class GetBookByIdQueryHandler(
     public async Task<Result<BookResponse>> Handle(GetBookByIdQuery query, CancellationToken cancellationToken)
     {
         FilterDefinition<Book>? filter = Builders<Book>.Filter.Eq(l => l.Id, query.Id);
-        
-        BookResponse? book = await context.Books.
-            Find(filter)
+
+        BookResponse? book = await context.Books
+            .Find(filter)
             .Project(b => new BookResponse{
                 Id = b.Id,
                 Title = b.Title,
@@ -26,6 +26,6 @@ public sealed class GetBookByIdQueryHandler(
             })
             .FirstOrDefaultAsync(cancellationToken);
             
-        return book ?? Result.Failure<BookResponse>(error: UserErrors.NotFound(query.Id));
+        return book ?? Result.Failure<BookResponse>(error: BookErrors.NotFound(query.Id));
     }
 }
