@@ -19,4 +19,11 @@ public static class BookErrors
     public static Error TheresNoLoans => Error.Failure(
         code: "BooksAndLoans.NoBookAndLoans",
         description: "We don't have any books or loans at the moment.");
+
+    public static Error BookTitleRequired  => Error.Failure(
+        code: "Books.TitleIsRequired",
+        description: "The title of the book is required.");
+    public static Error BookAuthorRequired  => Error.Failure(
+        code: "Books.AuthorIsRequired",
+        description: "The author of the book is required.");
 }

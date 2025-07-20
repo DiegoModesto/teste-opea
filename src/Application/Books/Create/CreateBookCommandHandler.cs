@@ -11,13 +11,23 @@ public sealed class CreateBookCommandHandler(IApplicationDbContext context)
 {
     public async Task<Result<Guid>> Handle(CreateBookCommand command, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(command.Title))
+        {
+            return Result.Failure<Guid>(BookErrors.BookTitleRequired);
+        }
+
+        if (string.IsNullOrEmpty(command.Author))
+        {
+            return Result.Failure<Guid>(BookErrors.BookAuthorRequired);
+        }
+        
         var book = new Book
         {
             Id = Guid.NewGuid(),
             Title = command.Title,
             Author = command.Author,
             Publish = command.Publish,
-            TotalRemaining = command.Remaining
+            TotalRemaining = command.Remaining > 0 ? command.Remaining : 10,
         };
         
         context.Books.Add(book);
