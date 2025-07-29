@@ -1,10 +1,10 @@
 using Domain;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Abstractions.Data;
 
 public interface IReadDbContext
 {
-    IMongoCollection<Book> Books { get; }
-    IMongoCollection<Loan> Loans { get; }
+    DbSet<Book> Books { get; }
+    DbSet<Loan> Loans { get; }
 }

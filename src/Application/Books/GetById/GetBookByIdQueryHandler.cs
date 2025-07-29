@@ -1,31 +1,34 @@
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Domain;
-using Domain.Users;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
 using SharedKernel;
 
 namespace Application.Books.GetById;
 
 public sealed class GetBookByIdQueryHandler(
     IReadDbContext context)
-: IQueryHandler<GetBookByIdQuery, BookResponse>
+    : IQueryHandler<GetBookByIdQuery, BookResponse>
 {
     public async Task<Result<BookResponse>> Handle(GetBookByIdQuery query, CancellationToken cancellationToken)
     {
-        FilterDefinition<Book>? filter = Builders<Book>.Filter.Eq(l => l.Id, query.Id);
-
-        BookResponse? book = await context.Books
-            .Find(filter)
-            .Project(b => new BookResponse{
+        var book = await context.Books
+            .AsNoTracking()
+            .Where(b => b.Id == query.Id)
+            .Select(b => new BookResponse
+            {
                 Id = b.Id,
                 Title = b.Title,
                 Author = b.Author,
                 Publish = b.Publish
             })
             .FirstOrDefaultAsync(cancellationToken);
-            
-        return book ?? Result.Failure<BookResponse>(error: BookErrors.NotFound(query.Id));
+
+        if (book is null)
+        {
+            return Result.Failure<BookResponse>(BookErrors.NotFound(query.Id));
+        }
+
+        return Result.Success(book);
     }
 }

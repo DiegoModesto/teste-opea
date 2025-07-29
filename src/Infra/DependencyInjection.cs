@@ -40,11 +40,13 @@ public static class DependencyInjection
 
     public static IServiceCollection AddReadDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        MongoDbSettings? db = configuration
-            .GetSection(key: "MongoDb")
-            .Get<MongoDbSettings>();
+        string? connectionString = configuration.GetConnectionString(name: "DSM_LICENCE_HANDLER");
 
-        services.AddSingleton<IReadDbContext>(_ => new ReadDbContext(db!.ConnectionString, db.DatabaseName));
+        services.AddDbContext<ReadDbContext>(options =>
+            options.UseNpgsql(connectionString)
+                   .UseSnakeCaseNamingConvention());
+
+        services.AddScoped<IReadDbContext>(sp => sp.GetRequiredService<ReadDbContext>());
         
         return services;
     }
@@ -53,8 +55,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        
-         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(o =>
             {
                 o.RequireHttpsMetadata = false;
@@ -85,11 +86,4 @@ public static class DependencyInjection
 
         return services;
     }
-}
-
-
-internal class MongoDbSettings
-{
-    public string ConnectionString { get; set; } = string.Empty;
-    public string DatabaseName { get; set; } = string.Empty;
 }
